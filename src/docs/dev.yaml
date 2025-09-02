@@ -1,0 +1,209 @@
+/dev/reset:
+  delete:
+    tags:
+      - Development
+    summary: Reset database
+    description: Clear all database data (for development/testing only)
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Database cleared successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "✅ Database cleared successfully."
+      '403':
+        description: Operation not allowed in production
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "🚫 Operation not allowed in production"
+      '500':
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "❌ Failed to clear database"
+                error:
+                  type: string
+                  example: "Error details here"
+
+/dev/seed-users:
+  post:
+    tags:
+      - Development
+    summary: Seed initial users
+    description: Create default users for admin, agronomist, and farmer roles (for development/testing only)
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Users seeded successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Users seeded successfully"
+      '403':
+        description: Operation not allowed in production
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Operation not allowed in production"
+      '500':
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Failed to seed users"
+                error:
+                  type: string
+                  example: "Error details here"
+
+/dev/login-by-role:
+  post:
+    tags:
+      - Development
+    summary: Login by role
+    description: Quickly login as first user with specified role (for development/testing only)
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: query
+        name: role
+        required: true
+        schema:
+          type: string
+          enum:
+            - ADMIN
+            - AGRONOMIST
+            - FARMER
+            - DEVELOPER
+            - UI_UX
+            - MODERATOR
+            - SUPPORT
+            - RESEARCHER
+            - DATA_ANALYST
+            - TESTER
+            - CONTENT_MANAGER
+        description: Select user role to login as
+    responses:
+      '200':
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Logged in as role FARMER"
+                data:
+                  type: object
+                  properties:
+                    access_token:
+                      type: string
+                      example: "jwt.token.here"
+                    user:
+                      type: object
+                      description: User info object
+      '400':
+        description: Bad request - role missing
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Role is required as a query parameter"
+      '403':
+        description: Operation not allowed in production
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Operation not allowed in production"
+      '404':
+        description: User not found for role
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "No user found with role FARMER"
+      '500':
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Failed to login by role"
+                error:
+                  type: string
+                  example: "Error details here"

@@ -1,0 +1,632 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "profilePicture": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "https://st3.depositphotos.com/15648834/17930/v/450/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+        },
+        "role": {
+          "type": "string",
+          "default": "FARMER",
+          "enum": [
+            "FARMER",
+            "AGRONOMIST",
+            "ADMIN",
+            "DEVELOPER",
+            "UI_UX",
+            "MODERATOR",
+            "SUPPORT",
+            "RESEARCHER",
+            "DATA_ANALYST",
+            "TESTER",
+            "CONTENT_MANAGER"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "farmer": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Farmer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "Agronomist": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Agronomist"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "username": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "FeedbackResponse": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FeedbackResponse"
+          }
+        },
+        "notifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Notification"
+          }
+        }
+      }
+    },
+    "Farmer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Region"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "detections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Detection"
+          }
+        },
+        "feedbacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Feedback"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Agronomist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "name": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "region": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Region"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "advices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Advice"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Region": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "farmers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Farmer"
+          }
+        },
+        "Agronomists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Agronomist"
+          }
+        },
+        "diseaseStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiseaseStat"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Disease": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scientificName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "symptoms": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "severity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prevention": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "treatment": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Detection"
+          }
+        },
+        "diseaseStats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiseaseStat"
+          }
+        },
+        "medicines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Medicine"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "DiseaseStat": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "disease": {
+          "$ref": "#/definitions/Disease"
+        },
+        "region": {
+          "$ref": "#/definitions/Region"
+        },
+        "occurrence": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Detection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "farmer": {
+          "$ref": "#/definitions/Farmer"
+        },
+        "image": {
+          "type": "string"
+        },
+        "disease": {
+          "$ref": "#/definitions/Disease"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "detectedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "feedbacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Feedback"
+          }
+        },
+        "advices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Advice"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Advice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "detection": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Detection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "Agronomist": {
+          "$ref": "#/definitions/Agronomist"
+        },
+        "prescription": {
+          "type": "string"
+        },
+        "medicine": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Medicine"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "feedbacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Feedback"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Feedback": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "detection": {
+          "$ref": "#/definitions/Detection"
+        },
+        "farmer": {
+          "$ref": "#/definitions/Farmer"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "accuracy",
+            "usability",
+            "feature",
+            "bug",
+            "other"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "default": "pending",
+          "enum": [
+            "pending",
+            "addressed",
+            "resolved",
+            "rejected"
+          ]
+        },
+        "comment": {
+          "type": "string"
+        },
+        "advice": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Advice"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "response": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FeedbackResponse"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FeedbackResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "author": {
+          "$ref": "#/definitions/User"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "feedback": {
+          "$ref": "#/definitions/Feedback"
+        }
+      }
+    },
+    "Notification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "title": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "isRead": {
+          "type": "boolean",
+          "default": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Medicine": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usageInstructions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "advices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Advice"
+          }
+        },
+        "diseases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disease"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "farmer": {
+      "$ref": "#/definitions/Farmer"
+    },
+    "agronomist": {
+      "$ref": "#/definitions/Agronomist"
+    },
+    "region": {
+      "$ref": "#/definitions/Region"
+    },
+    "disease": {
+      "$ref": "#/definitions/Disease"
+    },
+    "diseaseStat": {
+      "$ref": "#/definitions/DiseaseStat"
+    },
+    "detection": {
+      "$ref": "#/definitions/Detection"
+    },
+    "advice": {
+      "$ref": "#/definitions/Advice"
+    },
+    "feedback": {
+      "$ref": "#/definitions/Feedback"
+    },
+    "feedbackResponse": {
+      "$ref": "#/definitions/FeedbackResponse"
+    },
+    "notification": {
+      "$ref": "#/definitions/Notification"
+    },
+    "medicine": {
+      "$ref": "#/definitions/Medicine"
+    }
+  }
+}

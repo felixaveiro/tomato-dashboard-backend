@@ -1,0 +1,90 @@
+/medecines:
+  get:
+    tags:
+      - Medecine
+    summary: Get all medecines
+    responses:
+      200:
+        description: List of all medecines
+  post:
+    tags:
+      - Medecine
+    summary: Create a new medecine
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MedicineInput'
+    responses:
+      201:
+        description: Medecine created
+/medecines/by-disease/{id}:
+  get:
+    tags:
+      - Medecine
+    summary: Get medicines related to a specific disease
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: List of medicines for the given disease
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Medicine'
+      404:
+        description: Disease not found
+
+/medecines/{id}:
+  get:
+    tags:
+      - Medecine
+    summary: Get medecine by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Medecine details
+  put:
+    tags:
+      - Medecine
+    summary: Update medecine by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MedicineInput'
+    responses:
+      200:
+        description: Medecine updated
+  delete:
+    tags:
+      - Medecine
+    summary: Delete medecine by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      204:
+        description: Medecine deleted

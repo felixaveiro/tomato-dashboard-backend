@@ -1,0 +1,135 @@
+/feedback/on-detection:
+  post:
+    tags:
+      - Feedback
+    summary: Submit feedback on detection
+    description: Allows a farmer to submit feedback specifically on a detection.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeedbackOnDetectionInput'
+    responses:
+      '201':
+        description: Feedback submitted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      '400':
+        description: Missing required fields or invalid input
+      '403':
+        description: Only farmers can submit feedback
+      '401':
+        description: Unauthorized
+/feedback/on-advice:
+  post:
+    tags:
+      - Feedback
+    summary: Submit feedback on advice
+    description: Allows a farmer to submit feedback on advice received from an agronomist.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeedbackOnAdviceInput'
+    responses:
+      '201':
+        description: Feedback submitted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      '400':
+        description: Missing required fields or invalid input
+      '403':
+        description: Only farmers can submit feedback
+      '401':
+        description: Unauthorized
+/feedback:
+  get:
+    tags:
+      - Feedback
+    summary: List all feedbacks
+    description: Returns a list of submitted feedbacks with limited information.
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: List of feedbacks
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/FeedbackListItem'
+      '401':
+        description: Unauthorized
+
+/feedback/{id}:
+  get:
+    tags:
+      - Feedback
+    summary: Get feedback by ID
+    description: Get detailed feedback information by its ID.
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Feedback ID
+    responses:
+      '200':
+        description: Feedback found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Feedback'
+      '404':
+        description: Feedback not found
+      '401':
+        description: Unauthorized
+
+  delete:
+    tags:
+      - Feedback
+    summary: Delete feedback
+    description: Delete feedback by ID. Only owner, agronomist, or admin can delete.
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Feedback ID
+    responses:
+      '200':
+        description: Feedback deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Feedback deleted successfully
+      '403':
+        description: Not authorized to delete this feedback
+      '404':
+        description: Feedback not found
+      '401':
+        description: Unauthorized

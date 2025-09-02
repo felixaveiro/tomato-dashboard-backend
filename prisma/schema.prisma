@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  output   = "./prisma/json-schema"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  FARMER
+  AGRONOMIST
+  ADMIN
+  DEVELOPER
+  UI_UX
+  MODERATOR
+  SUPPORT
+  RESEARCHER
+  DATA_ANALYST
+  TESTER
+  CONTENT_MANAGER
+}
+
+enum FeedbackCategory {
+  accuracy
+  usability
+  feature
+  bug
+  other
+}
+
+enum FeedbackStatus {
+  pending
+  addressed
+  resolved
+  rejected  
+}
+
+model User {
+  id               String             @id @default(uuid())
+  email            String             @unique
+  password         String
+  profilePicture   String?            @default("https://st3.depositphotos.com/15648834/17930/v/450/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg")
+  role             Role               @default(FARMER)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  farmer           Farmer?
+  agronomist       Agronomist?
+  username         String?
+  feedbackResponse FeedbackResponse[]
+  notifications    Notification[]
+}
+
+model Farmer {
+  id         String      @id @default(uuid())
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String      @unique
+  region     Region?     @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId   String?
+  detections Detection[]
+  feedbacks  Feedback[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Agronomist {
+  id        String   @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  name      String
+  latitude  Float?
+  longitude Float?
+  region    Region?    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId  String?
+  advices   Advice[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Region {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  latitude     Float?
+  longitude    Float?
+  farmers      Farmer[]
+  agronomists  Agronomist[]
+  diseaseStats DiseaseStat[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Disease {
+  id             String        @id @default(uuid())
+  name           String        @unique
+  description    String?
+  scientificName String?
+  symptoms       String?
+  severity       String?
+  prevention     String?  
+  treatment      String?
+  detections     Detection[]
+  diseaseStats   DiseaseStat[]
+  medicines      Medicine[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model DiseaseStat {
+  id         String   @id @default(uuid())
+ disease    Disease  @relation(fields: [diseaseId], references: [id], onDelete: Cascade)
+  diseaseId  String
+region     Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId   String
+  occurrence Int
+  date       DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Detection {
+  id         String     @id @default(uuid())
+ farmer     Farmer     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  farmerId   String
+  image      String
+ disease    Disease    @relation(fields: [diseaseId], references: [id], onDelete: Cascade)
+  diseaseId  String
+  confidence Float
+  latitude   Float?
+  longitude  Float?
+  detectedAt DateTime   @default(now())
+  feedbacks  Feedback[]
+  advices    Advice[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Advice {
+  id           String      @id @default(uuid())
+detection    Detection?  @relation(fields: [detectionId], references: [id], onDelete: Cascade)
+  detectionId  String? 
+ agronomist   Agronomist  @relation(fields: [agronomistId], references: [id], onDelete: Cascade)
+  agronomistId String
+  prescription String
+ medicine     Medicine?   @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+  medicineId   String?
+  feedbacks    Feedback[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Feedback {
+ id           String             @id @default(uuid())
+  detection    Detection          @relation(fields: [detectionId], references: [id], onDelete: Cascade)
+  detectionId  String
+  farmer       Farmer             @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  farmerId     String
+  category     FeedbackCategory
+  status       FeedbackStatus     @default(pending)
+  comment      String
+advice       Advice?            @relation(fields: [adviceId], references: [id], onDelete: Cascade)
+  adviceId     String?
+  response     FeedbackResponse[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model FeedbackResponse {
+  id         String   @id @default(uuid())
+  message    String
+  authorId   String   
+author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  feedback   Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  feedbackId String   
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medicine {
+  id                String    @id @default(uuid())
+  name              String    @unique
+  description       String?
+  usageInstructions String[]
+  advices           Advice[]
+  diseases          Disease[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}

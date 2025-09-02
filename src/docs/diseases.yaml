@@ -1,0 +1,91 @@
+/diseases:
+  get:
+    tags:
+      - Disease
+    summary: Get all diseases
+    responses:
+      200:
+        description: List of diseases
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Disease'
+
+  post:
+    tags:
+      - Disease
+    summary: Create a new disease
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DiseaseInput'  # Use input schema with defaults here
+    responses:
+      201:
+        description: Disease created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Disease'
+
+/diseases/{id}:
+  get:
+    tags:
+      - Disease
+    summary: Get disease by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Disease found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Disease'
+      404:
+        description: Disease not found
+
+  put:
+    tags:
+      - Disease
+    summary: Update disease by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DiseaseInput'  # Use input schema with defaults here
+    responses:
+      200:
+        description: Disease updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Disease'
+
+  delete:
+    tags:
+      - Disease
+    summary: Delete disease by ID
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Disease deleted

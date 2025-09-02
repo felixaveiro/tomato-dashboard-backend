@@ -1,0 +1,27 @@
+tomato-disease-backend/
+├── prisma/
+│   └── schema.prisma                # Prisma schema file
+├── uploads/                        # Uploaded images storage folder
+├── src/
+│   ├── controllers/
+│   │   ├── authController.js       # User registration/login (bcrypt + JWT)
+│   │   ├── imageController.js      # Image upload & disease detection
+│   │   └── notificationController.js  # Notification trigger controller (optional)
+│   ├── middleware/
+│   │   ├── authMiddleware.js       # JWT auth middleware
+│   │   └── upload.js               # Multer config for image uploads (optional)
+│   ├── models/
+│   │   └── prismaClient.js         # Prisma client instance export
+│   ├── routes/
+│   │   ├── auth.js                 # Auth routes (register, login)
+│   │   ├── imageRoutes.js          # Image upload & fetch routes
+│   │   └── notificationRoutes.js  # Notification routes (optional)
+│   ├── services/
+│   │   ├── authService.js          # Auth related business logic
+│   │   ├── imageService.js         # Image handling business logic
+│   │   └── firebaseService.js      # Firebase Admin SDK integration for notifications
+│   └── index.js                   # Main server entry (Express app + routes setup)
+├── .env                           # Environment variables (DB URL, JWT secret, Firebase creds)
+├── package.json                   # npm config + scripts (nodemon, start, dev)
+├── package-lock.json
+└── README.md                     # Optional project documentation

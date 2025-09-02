@@ -1,0 +1,267 @@
+
+  /notifications:
+    get:
+      summary: Get all notifications for current user
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of notifications fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Notifications fetched
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  /notifications/user/{userId}:
+    get:
+      summary: Get notifications for a specific user (ADMIN only)
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          description: User ID to fetch notifications for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User notifications fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User notifications fetched
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  /notifications/{id}/read:
+    patch:
+      summary: Mark a notification as read
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Notification ID to mark as read
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification marked as read successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          $ref: '#/components/schemas/NotFound'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  /notifications/mark-all-read:
+    patch:
+      summary: Mark all notifications as read for current user
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: All notifications marked as read successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  /notifications/{id}/delete:
+    delete:
+      summary: Delete a notification
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Notification ID to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          $ref: '#/components/schemas/NotFound'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  /notifications/deleteAll:
+    delete:
+      summary: Delete all notifications for current user
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: All notifications deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '500':
+          $ref: '#/components/schemas/InternalError'
+
+  components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        userId:
+          type: string
+          format: uuid
+          example: "e8b5e5a4-1f4c-4d47-9bb4-1e1e2f81412a"
+        title:
+          type: string
+          example: "New Message"
+        message:
+          type: string
+          example: "You have a new notification"
+        isRead:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-06-25T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-06-25T11:00:00Z"
+    ResponseSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation successful"
+        data:
+          type: object
+          nullable: true
+
+  responses:
+    Unauthorized:
+      description: Unauthorized - Missing or invalid JWT token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Unauthorized"
+
+    Forbidden:
+      description: Forbidden - User does not have permission
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Forbidden"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Resource not found"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Something went wrong"

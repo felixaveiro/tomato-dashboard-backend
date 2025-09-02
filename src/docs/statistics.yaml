@@ -1,0 +1,331 @@
+
+  /statistics/farmer:
+    get:
+      tags:
+        - Statistics
+      summary: Get farmer dashboard statistics
+      description: Returns analytics data specific to the authenticated farmer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response with farmer statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      totalDetections:
+                        type: integer
+                        example: 15
+                      diseaseDistribution:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            disease:
+                              type: string
+                              example: "Leaf Rust"
+                            count:
+                              type: integer
+                              example: 8
+                      healthStatus:
+                        type: object
+                        properties:
+                          healthy:
+                            type: integer
+                            example: 5
+                          diseased:
+                            type: integer
+                            example: 10
+                      recentDetections:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Detection'
+                      adviceStats:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            example: 7
+                          withMedicine:
+                            type: integer
+                            example: 3
+                      feedbackStatus:
+                        type: object
+                        properties:
+                          pending:
+                            type: integer
+                            example: 2
+                          addressed:
+                            type: integer
+                            example: 1
+                      unreadNotifications:
+                        type: integer
+                        example: 3
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /statistics/agronomist:
+    get:
+      tags:
+        - Statistics
+      summary: Get agronomist dashboard statistics
+      description: Returns analytics data specific to the authenticated agronomist
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response with agronomist statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      farmerStats:
+                        type: object
+                        properties:
+                          totalFarmers:
+                            type: integer
+                            example: 42
+                          activeFarmers:
+                            type: integer
+                            example: 25
+                      diseaseTrends:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "Wheat Blight"
+                            detectionCount:
+                              type: integer
+                              example: 18
+                            lastDetection:
+                              type: string
+                              format: date-time
+                      advicePerformance:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            example: 56
+                          withFeedback:
+                            type: integer
+                            example: 32
+                      recentDetections:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Detection'
+                      pendingActions:
+                        type: object
+                        properties:
+                          unreadNotifications:
+                            type: integer
+                            example: 5
+                          pendingFeedback:
+                            type: integer
+                            example: 3
+                      topMedicines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "Fungicide X"
+                            usageCount:
+                              type: integer
+                              example: 12
+                            diseases:
+                              type: array
+                              items:
+                                type: string
+                                example: "Leaf Rust"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /statistics/admin:
+    get:
+      tags:
+        - Statistics
+      summary: Get admin dashboard statistics
+      description: Returns comprehensive platform analytics for administrators
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response with admin statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      userStats:
+                        type: object
+                        properties:
+                          totalUsers:
+                            type: integer
+                            example: 128
+                          activeUsers:
+                            type: integer
+                            example: 89
+                          roleDistribution:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                role:
+                                  type: string
+                                  example: "FARMER"
+                                count:
+                                  type: integer
+                                  example: 75
+                      detectionStats:
+                        type: object
+                        properties:
+                          totalDetections:
+                            type: integer
+                            example: 342
+                          recentDetections:
+                            type: integer
+                            example: 87
+                          topDiseases:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  example: "Corn Smut"
+                                detectionCount:
+                                  type: integer
+                                  example: 45
+                      feedbackStats:
+                        type: object
+                        properties:
+                          totalFeedbacks:
+                            type: integer
+                            example: 56
+                          unresolvedFeedbacks:
+                            type: integer
+                            example: 12
+                      recentActivity:
+                        type: object
+                        properties:
+                          newUsers:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/User'
+                          criticalIssues:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: "feedback_123"
+                                category:
+                                  type: string
+                                  example: "bug"
+                                disease:
+                                  type: string
+                                  example: "Tomato Blight"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  components:
+    schemas:
+      Detection:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "detection_123"
+          image:
+            type: string
+            example: "https://example.com/image.jpg"
+          confidence:
+            type: number
+            format: float
+            example: 0.85
+          detectedAt:
+            type: string
+            format: date-time
+          disease:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Leaf Spot"
+      User:
+        type: object
+        properties:
+          email:
+            type: string
+            example: "user@example.com"
+          role:
+            type: string
+            example: "FARMER"
+          createdAt:
+            type: string
+            format: date-time
+  
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+  
+    responses:
+      Forbidden:
+        description: Access forbidden for current role
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Access restricted to administrators only"
+      ServerError:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: "Failed to fetch dashboard data"

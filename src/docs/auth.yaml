@@ -1,0 +1,378 @@
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      description: Logs in a user and returns an access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: imanariyobaptiste@gmail.com
+                password:
+                  type: string
+                  example: password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflK1EL0SD3_MkmkzLSOQJw2b2LlP_EbHgdc1iMzzxA
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+        '404':
+          description: User not found
+
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: User Signup
+      description: Registers a new user.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: imanariyobaptiste@gmail.com
+                password:
+                  type: string
+                  example: password
+                profilePicture:
+                  type: string
+                  format: binary
+  
+                username:
+                  type: string
+                  example: imanariyo baptiste
+              required:
+                - email
+                - password
+                - username
+      responses:
+        '200':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Registration successful
+                  accesstoken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflK1EL0SD3_MkmkzLSOQJw2b2LlP_EbHgdc1iMzzxA
+                  userinfomation:
+                    $ref: '#/components/schemas/User'
+        '409':
+          description: Email already in use
+
+  /auth/forget:
+    post:
+      tags:
+        - Authentication
+      summary: Request Password Reset
+      description: Sends an OTP to the user's email for password reset.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '200':
+          description: OTP sent successfully
+        '404':
+          description: User not found
+
+  /auth/reset:
+    post:
+      tags:
+        - Authentication
+      summary: Reset Password
+      description: Resets the user's password using the OTP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                otp:
+                  type: string
+                  example: 123456
+                newPassword:
+                  type: string
+                  example: NewPassword123
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid OTP or OTP expired
+        '404':
+          description: User not found
+
+  /auth/getAllUsers:
+    get:
+      tags:
+        - Authentication
+      summary: Get All Users
+      description: Retrieves a list of all users.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful retrieval
+
+  /auth/change:
+    post:
+      tags:
+        - Authentication
+      summary: Change Password
+      description: Changes the user's password.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  example: OldPassword123
+                newPassword:
+                  type: string
+                  example: NewPassword123
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Invalid current password
+
+  /auth/deleteUserById/{id}:
+    delete:
+      tags:
+        - Authentication
+      summary: Delete User by ID
+      description: Deletes a user by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The ID of the user to delete
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+  /auth/updateUserById/{id}:
+    patch:
+      tags:
+        - Authentication
+      summary: Update User by ID
+      description: Updates a user by their ID.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: updateduser@example.com
+                fullNames:
+                  type: string
+                  example: Jane Doe
+                username:
+                  type: string
+                  example: janedoe
+                profilePicture:
+                  type: string
+                  format: binary
+              required:
+                - email
+                - fullNames
+                - username
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User updated successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+  /auth/addadminbyid/{id}:
+    patch:
+      tags:
+        - Authentication
+      summary: Add Admin by ID
+      description: Grants admin privileges to a user by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The ID of the user to grant admin privileges
+      responses:
+        '200':
+          description: Admin privileges granted
+        '404':
+          description: User not found
+
+  /auth/maketheadminasuser/{id}:
+    patch:
+      tags:
+        - Authentication
+      summary: Revoke Admin by ID
+      description: Revokes admin privileges from a user by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: The ID of the user to revoke admin privileges
+      responses:
+        '200':
+          description: Admin privileges revoked
+        '404':
+          description: User not found
+    /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get Current Authenticated User
+      description: Retrieves profile of the currently authenticated user based on the JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved current user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Your profile retrieved successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized – Token missing or invalid
+
+  /auth/user/{id}:
+    get:
+      tags:
+        - Authentication
+      summary: Get User by ID
+      description: Retrieves user info by ID. Only allowed if the requester is the user or an admin.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 7cc70b64-0dd5-4a90-8a12-c05d0980c0e6
+          description: The ID of the user to retrieve
+      responses:
+        '200':
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User retrieved successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized – Only the user or an admin can access this
+        '404':
+          description: User not found
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get Current Authenticated User
+      description: Retrieves profile of the currently authenticated user based on the JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved current user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Your profile retrieved successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized – Token missing or invalid
+
+  

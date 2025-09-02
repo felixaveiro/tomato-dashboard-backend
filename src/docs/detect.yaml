@@ -1,0 +1,179 @@
+/detect:
+  post:
+    tags:
+      - Detection
+    summary: Create a detection
+    description: Upload an image file (to get prediction automatically) or provide prediction results with an image URL
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - image
+            properties:
+              latitude:
+                type: string
+                example: "1.234"
+              longitude:
+                type: string
+                example: "2.345"
+              image:
+                type: string
+                format: binary
+                description: Image file to upload  
+    responses:
+      '201':
+        description: Detection created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detection'
+      '400':
+        description: Missing required fields or invalid input
+      '401':
+        description: Unauthorized
+  get:
+    tags:
+      - Detection
+    summary: Get all detections (basic info)
+    description: Retrieve a list of detections with basic details
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: List of detections
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DetectionBasic'
+      '401':
+        description: Unauthorized      
+        
+/detect/manual:
+  post:
+    tags:
+      - Detection
+    summary: Create detection from imageUrl and prediction
+    description: Provide image URL and prediction info directly
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - imageUrl
+              - diseaseName
+              - confidence
+            properties:
+              latitude:
+                type: string
+                example: "1.234"
+              longitude:
+                type: string
+                example: "2.345"
+              imageUrl:
+                type: string
+                example: "https://res.cloudinary.com/demo/image/upload/sample.jpg"
+              diseaseName:
+                type: string
+                example: "Tomato___healthy"
+              confidence:
+                type: number
+                format: float
+                example: 0.994
+    responses:
+      '201':
+        description: Detection created using provided data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detection'        
+
+/detect/my:
+  get:
+    tags:
+      - Detection
+    summary: Get detections for the logged-in user
+    description: Retrieve a list of detections belonging to the authenticated user
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: List of detections for the logged-in user
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DetectionBasic'
+      '401':
+        description: Unauthorized
+
+/detect/{id}:
+  get:
+    tags:
+      - Detection
+    summary: Get detection by ID
+    description: Get detailed information for a single detection
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Detection ID
+    responses:
+      '200':
+        description: Detection data found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detection'
+      '404':
+        description: Detection not found
+      '401':
+        description: Unauthorized
+
+  delete:
+    tags:
+      - Detection
+    summary: Delete detection by ID
+    description: Remove a detection entry by its ID
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Detection ID to delete
+    responses:
+      '200':
+        description: Detection deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Detection deleted successfully
+      '404':
+        description: Detection not found
+      '401':
+        description: Unauthorized

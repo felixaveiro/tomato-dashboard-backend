@@ -1,0 +1,82 @@
+
+  /feedback-response:
+    post:
+      tags:
+        - FeedbackResponse
+      summary: Create a feedback response
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - feedbackId
+                - message
+              properties:
+                feedbackId:
+                  type: string
+                  example: "b38d37f9-9441-4b1c-b579-4a92c64a2ad4"
+                message:
+                  type: string
+                  example: "Thanks for your feedback. We are working on it."
+      responses:
+        '201':
+          description: Feedback response created
+        '400':
+          description: Missing required fields
+        '500':
+          description: Failed to create feedback response
+
+    get:
+      tags:
+        - FeedbackResponse
+      summary: Get all feedback responses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of feedback responses
+        '500':
+          description: Failed to fetch feedback responses
+
+  /feedback-response/{id}:
+    get:
+      tags:
+        - FeedbackResponse
+      summary: Get a single feedback response by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "ae57c41c-32ad-4b69-81b1-f9d3d6a5d54d"
+      responses:
+        '200':
+          description: Feedback response found
+        '404':
+          description: Feedback response not found
+
+    delete:
+      tags:
+        - FeedbackResponse
+      summary: Delete a feedback response
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "ae57c41c-32ad-4b69-81b1-f9d3d6a5d54d"
+      responses:
+        '200':
+          description: Feedback response deleted
+        '500':
+          description: Failed to delete feedback response
