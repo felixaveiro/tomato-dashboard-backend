@@ -29,11 +29,11 @@ const swaggerSpec = {
     title: 'Tomato Disease Detection API',
     version: '1.0.0',
     description: `API documentation for the Tomato Disease Detection system.
-  📞 Phone: +250787795163`,
+  📞 Phone: +250780941222`,
   contact: {
-    name: 'Imanariyo Baptiste',
-    url: 'https://imanariyo-portfolio-web.vercel.app/',
-    email: 'imanariyobaptiste@gmail.com'
+    name: 'Bikorimana Felix',
+    url: 'https://rugangazi.netlify.app/',
+    email: 'bikofelix2020@gmail.com'
   }
   },
   servers: [
